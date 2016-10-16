@@ -28,26 +28,33 @@ public class MatrixMultiplication {
             System.exit(0);
         }
         int q = 4;
-        try {
             A = new int[n][m];
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++, q++)
-                    A[i][j] = Integer.parseInt(args[q]);
+                    try{
+                        A[i][j] = Integer.parseInt(args[q]);
+                    }catch (NumberFormatException e){
+                        System.out.println("Error number format!");
+                        System.exit(-1);
+                    }
             B = new int[x][y];
             for (int i = 0; i < x; i++)
                 for (int j = 0; j < y; j++, q++)
-                    B[i][j] = Integer.parseInt(args[q]);
-        } catch (NumberFormatException e) {
-            System.out.println("Error number format!");
-            System.exit(-2);
-        }
+                    try{
+                        B[i][j] = Integer.parseInt(args[q]);
+                    }catch (NumberFormatException e) {
+                        System.out.println("Error number format!");
+                        System.exit(-1);
+                    }
+
+
     }
 
     private String check(String[] args) {
         if (args.length - 4 < (n * m + x * y))
             return "Not enough parameters";
-        if (x < 0 || y < 0 || n < 0 || m < 0)
-            return "Some parameters are negative";
+        if (x <= 0 || y <= 0 || n <= 0 || m <= 0)
+            return "Some parameters are negative or 0";
         if (m != x)
             return "Sizes of the matrices are not equal";
         return "ok";
