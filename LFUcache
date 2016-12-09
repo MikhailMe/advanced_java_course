@@ -1,0 +1,97 @@
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class LFUcache {
+
+    class Pair {
+
+        private Integer frequency;
+        private String data;
+
+        public void setFrequency(Integer frequency) {
+            this.frequency = frequency;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+
+        public Integer getFrequency() {
+            return frequency;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        @Override
+        public String toString() {
+            return "Pair{" +
+                    "frequency=" + frequency +
+                    ", data=" + data +
+                    '}';
+        }
+    }
+    
+    private Pair pair;
+    private Map<Integer, Pair> cache;
+    private int capacity;
+
+    public LFUcache() {
+        cache = new LinkedHashMap<Integer, Pair>();
+        this.capacity = 10;
+    }
+
+    public LFUcache(int initialCapacity) {
+        cache = new LinkedHashMap<Integer, Pair>();
+        this.capacity = initialCapacity;
+    }
+
+    public boolean isFull() {
+        return cache.size() == capacity;
+    }
+
+    public int size(){
+        return cache.size();
+    }
+
+    public void add(int key, String data) {
+        if (!isFull()) {
+            Pair temp = new Pair();
+            temp.setData(data);
+            temp.setFrequency(0);
+            cache.put(key, temp);
+        } else {
+            int willRemove = getData();
+            cache.remove(willRemove);
+            Pair temp = new Pair();
+            temp.setData(data);
+            temp.setFrequency(0);
+            cache.put(key, temp);
+        }
+    }
+
+
+    public int getData() {
+        int key = 0;
+        int minFreq = Integer.MAX_VALUE;
+        for (Map.Entry<Integer, Pair> entry : cache.entrySet()) {
+            if (minFreq > entry.getValue().getFrequency()) {
+                key = entry.getKey();
+                entry.getValue().setFrequency(minFreq);
+            }
+        }
+        return key;
+    }
+
+    public String getPair(int key) {
+        if (cache.containsKey(key))
+        {
+            Pair temp = cache.get(key);
+            temp.setFrequency(temp.getFrequency() + 1);
+            cache.put(key, temp);
+            return temp.getData();
+        }
+        return null;
+    }
+}
